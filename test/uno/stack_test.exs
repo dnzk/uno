@@ -1,6 +1,29 @@
 defmodule Uno.StackTest do
   use ExUnit.Case, async: true
   alias Uno.Game.Stack
+  alias Uno.Game.Card
+  use ExUnitProperties
+  import UnoWeb.StackHelpers
+
+  defp stream_card() do
+    StreamData.fixed_map(%{
+      color: StreamData.atom(:alphanumeric),
+      value:
+        StreamData.one_of([
+          StreamData.integer(),
+          StreamData.string(:ascii)
+        ])
+    })
+  end
+
+  describe "shuffle/1" do
+    property "keeps the length of the original list" do
+      check all(list <- list_of(stream_card())) do
+        shuffled = Stack.shuffle(list)
+        assert length(shuffled) === length(list)
+      end
+    end
+  end
 
   describe "new/0" do
     test "creates 112 cards" do
@@ -167,52 +190,5 @@ defmodule Uno.StackTest do
              |> length()
              |> Kernel.===(4)
     end
-  end
-
-  describe "shuffle/1" do
-    test "shuffles the stack" do
-      assert Stack.new() !== Stack.shuffle(Stack.new())
-    end
-  end
-
-  ## Helper functions for stack
-  defp filter_by_color(stack, color) when color in [:red, :green, :blue, :yellow] do
-    stack
-    |> Enum.filter(&(&1.color === color))
-  end
-
-  defp filter_by_number_value(stack) do
-    stack
-    |> Enum.filter(&is_number(&1.value))
-  end
-
-  defp filter_by_value(stack, value) do
-    stack
-    |> Enum.filter(&(&1.value === value))
-  end
-
-  defp filter_by(stack, options) do
-    color = Keyword.get(options, :color, nil)
-    value = Keyword.get(options, :value, nil)
-
-    stack =
-      case color do
-        nil ->
-          stack
-
-        color ->
-          filter_by_color(stack, color)
-      end
-
-    stack =
-      case value do
-        nil ->
-          stack
-
-        value ->
-          filter_by_value(stack, value)
-      end
-
-    stack
   end
 end
