@@ -1,53 +1,40 @@
 defmodule Uno.Game.Card do
-  defstruct color: :red, value: ""
+  defstruct color: :red, value: nil
   alias __MODULE__
 
-  def new(:reverse, color) do
+  @colors [:red, :green, :yellow, :blue]
+  @values_with_color [:reverse, :skip, :draw_2]
+  @values_without_color [:wild, :wild_draw_4, :blank]
+
+  def new(value) when value in @values_without_color do
     %Card{
-      color: color,
-      value: :reverse
+      color: nil,
+      value: value
     }
   end
 
-  def new(:skip, color) do
-    %Card{
-      color: color,
-      value: :skip
-    }
-  end
+  def new(_), do: :error
 
-  def new(:draw_2, color) do
-    %Card{
-      color: color,
-      value: :draw_2
-    }
-  end
-
-  def new(color, value) do
+  def new(value, color) when color in @colors and value in @values_with_color do
     %Card{
       color: color,
       value: value
     }
   end
 
-  def new(:wild) do
+  def new(value, color) when color in @colors and value in 0..9 do
     %Card{
-      color: nil,
-      value: :wild
+      color: color,
+      value: value
     }
   end
 
-  def new(:wild_draw_4) do
+  def new(value, color) when color in @colors do
     %Card{
-      color: nil,
-      value: :wild_draw_4
+      color: color,
+      value: value
     }
   end
 
-  def new(:blank) do
-    %Card{
-      color: nil,
-      value: :blank
-    }
-  end
+  def new(_, _), do: :error
 end

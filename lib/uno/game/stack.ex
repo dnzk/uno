@@ -15,8 +15,8 @@ defmodule Uno.Game.Stack do
   def shuffle(stack), do: Enum.shuffle(stack)
 
   defp generate_number_cards() do
-    numbers_1 = for color <- @colors, number <- 0..9, do: Card.new(color, number)
-    numbers_2 = for color <- @colors, number <- 1..9, do: Card.new(color, number)
+    numbers_1 = for color <- @colors, number <- 0..9, do: Card.new(number, color)
+    numbers_2 = for color <- @colors, number <- 1..9, do: Card.new(number, color)
     numbers_1 ++ numbers_2
   end
 

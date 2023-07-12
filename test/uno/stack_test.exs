@@ -1,7 +1,6 @@
 defmodule Uno.StackTest do
   use ExUnit.Case, async: true
   alias Uno.Game.Stack
-  alias Uno.Game.Card
   use ExUnitProperties
   import UnoWeb.StackHelpers
 
