@@ -3,21 +3,11 @@ defmodule Uno.StackTest do
   alias Uno.Game.Stack
   use ExUnitProperties
   import UnoWeb.StackHelpers
-
-  defp stream_card() do
-    StreamData.fixed_map(%{
-      color: StreamData.atom(:alphanumeric),
-      value:
-        StreamData.one_of([
-          StreamData.integer(),
-          StreamData.string(:ascii)
-        ])
-    })
-  end
+  alias UnoWeb.CardHelpers
 
   describe "shuffle/1" do
     property "keeps the length of the original list" do
-      check all(list <- list_of(stream_card())) do
+      check all(list <- list_of(CardHelpers.stream_any_card())) do
         shuffled = Stack.shuffle(list)
         assert length(shuffled) === length(list)
       end

@@ -3,11 +3,14 @@ defmodule Uno.Game do
   alias Uno.Game.Stack
   alias __MODULE__
 
-  def start(players) do
-    Stack.new()
-    |> Stack.shuffle()
-    |> split_to_players(players)
+  def start(players) when length(players) > 1 and length(players) <= 10 do
+    {:ok,
+     Stack.new()
+     |> Stack.shuffle()
+     |> split_to_players(players)}
   end
+
+  def start(_), do: {:error, "Players count invalid"}
 
   defp split_to_players(stack, players) do
     {for_players, remains} = slice_stack(stack, length(players))
